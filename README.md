@@ -3,6 +3,7 @@
 This repository demonstrates **logit-based uncertainty estimation** for a Vision-Language Model (VLM) by extracting **per-token probabilities (logprobs)** and **token entropy** from the model’s generation logits.  
 Instead of trusting verbal confidence (e.g., “I am 90% sure”), we measure uncertainty directly from the model’s internal distribution during decoding.
 
+
 ## Motivation
 VLMs (and LLMs) may produce confident-sounding answers even when they are wrong. A more reliable signal comes from the model’s **internal token probabilities**:
 - **Low logprob** for key tokens suggests uncertainty.
@@ -26,16 +27,6 @@ We report the following summary metrics per generated answer:
 - **max_entropy**: highest entropy across steps (often spikes at ambiguous object words)
 - **internal_conf**: `exp(avg_logprob)` (geometric mean token probability; not calibrated correctness)
 
-
-## Experiment: Blur vs Uncertainty
-We evaluate uncertainty on the **same prompt** using three images:
-1. **Clear image**
-2. **Slightly blurred image**
-3. **Highly blurred image**
-
-Hypothesis:
-- Increasing blur reduces visual evidence → model uncertainty increases.
-
 ## Model & Environment
 - Model: LLaVA 1.5 7B (`llava-hf/llava-1.5-7b-hf`)
 - Inference: greedy decoding (`do_sample=False`) for stable token probability analysis
@@ -48,6 +39,36 @@ During generation, at each decoding step the model outputs logits over the vocab
 2. chosen token logprob = confidence for the produced token
 3. entropy of full distribution = uncertainty at that step
 4. compare uncertainty across image conditions (clear vs blurred)
+
+## Running the Notebook (Google Colab)
+
+1. Open `notebooks/01_logit_uncertainty_demo.ipynb` in Colab:
+   - In GitHub: open the notebook file → copy the URL
+   - Go to Colab → **File → Open notebook → GitHub** → paste the URL (or search the repo)
+
+2. Enable GPU:
+   - **Runtime → Change runtime type → Hardware accelerator → GPU (T4)**
+
+3. Run cells top-to-bottom:
+   - Install dependencies
+   - Load model (4-bit quantization)
+   - Upload/select an image
+   - Enter your prompt in the `user_text` variable
+   - Run inference to print **Top-k token probabilities + entropy**
+
+> Tip: If you get package conflicts, restart the runtime (**Runtime → Restart runtime**) and reinstall only:
+> `transformers`, `accelerate`, `bitsandbytes` (avoid upgrading torch/pandas/pillow in Colab).
+
+---
+
+## Experiment: Blur vs Uncertainty
+We evaluate uncertainty on the **same prompt** using three images:
+1. **Clear image**
+2. **Slightly blurred image**
+3. **Highly blurred image**
+
+Hypothesis:
+- Increasing blur reduces visual evidence → model uncertainty increases.
 
 
 ***Experiment 1(Clear Image)***

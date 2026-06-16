@@ -51,3 +51,13 @@ Hypothesis:
 - **Actionable trust decision:** Use **entropy + margin** as a quality gate:
   - **Low-trust / warning** when entropy is high and margin is low (e.g., heavy blur: **entropy=0.822**, **margin=0.722**).
   - **High-trust** when entropy is low and margin is high (e.g., clear image: **entropy=0.198**, **margin=0.951**).
+
+## Stage 2: Expanded VLM Uncertainty Test Plan
+
+| Test Group | Scenario | Prompt | Expected Behavior |
+|---|---|---|---|
+| Image Quality Degradation | Clear / slight blur / heavy blur | What is the main object in the image? | Entropy should increase as blur increases |
+| Object Counting | Easy vs hard counting | How many objects are in the image? | Hard counting should produce higher entropy |
+| Semantic Contradiction | Dog image with cat prompt | What breed of cat is this? | Higher uncertainty or flicker |
+| Fine-Grained Classification | Common vs rare breed | What specific breed/species is this? | Rare classes should produce higher entropy |
+| Spatial Reasoning | Clear vs ambiguous object positions | Is the red ball left or right of the blue box? | Ambiguous layouts should increase entropy |
